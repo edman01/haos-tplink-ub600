@@ -1,0 +1,5 @@
+*
+!Dockerfile
+!patch_btusb.py
+!compatibility.py
+!run.py
