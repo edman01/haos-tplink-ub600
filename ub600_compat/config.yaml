@@ -1,0 +1,14 @@
+name: TP-Link UB600 Bluetooth compatibility
+version: "0.1.0"
+slug: ub600_compat
+description: Experimental Realtek quirk workaround for TP-Link UB600 (37ad:0600).
+url: https://github.com/edman01/haos-tplink-ub600
+arch:
+  - amd64
+startup: system
+boot: auto
+init: false
+kernel_modules: true
+apparmor: true
+options: {}
+schema: {}
