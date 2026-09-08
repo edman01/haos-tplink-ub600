@@ -4,6 +4,9 @@ An **experimental, narrowly scoped workaround** for the TP-Link UB600 USB
 Bluetooth adapter **`37ad:0600`** on an older Home Assistant OS kernel that
 does not apply the adapter's Realtek firmware-loading quirk.
 
+`37ad:0600` is a shared USB vendor/product ID, not a unique serial number.
+The documented module hashes identify file contents, not a person or device.
+
 **Prefer an official Home Assistant OS update with native support.** The
 [upstream Linux fix](https://github.com/torvalds/linux/commit/bc597f0cc44f0b173c50ee986a047219cd559ee9)
 already exists, and the USB ID is present in
@@ -53,6 +56,10 @@ not sufficient. This app requires Home Assistant OS with the app store; it
 is not an installation method for Home Assistant Container.
 
 ## Install
+
+Version 0.1.1 checks for the adapter in read-only USB sysfs before touching
+the driver. If absent or not visible, it waits and checks again every 30
+seconds without running kernel commands. No serial numbers are read.
 
 1. Read the [full instructions and recovery procedure](ub600_compat/DOCS.md).
    Have a current backup and local console access before starting.
