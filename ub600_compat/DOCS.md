@@ -46,6 +46,18 @@ configuration or sensor registries to install this adapter workaround.
 
 ## Verify the repair
 
+Version 0.1.1 first checks the read-only `idVendor` and `idProduct` USB
+attributes. These are shared product identifiers, not serial numbers.
+If the adapter is absent or USB sysfs cannot be read, the app reports
+`waiting_for_adapter` and retries every 30 seconds without changing the
+driver. Check USB passthrough and physical connection; do not disable
+protection mode or add privileges to bypass this check.
+
+Presence is checked again before kernel commands and immediately before
+unloading. Physical removal can still race with the last check; this is
+not an atomic hardware lock. Once loaded successfully, reconnecting the
+adapter does not cause periodic driver resets.
+
 Successful log output includes `patched_copy`, a four-byte change report,
 and `UB600 compatibility driver loaded; stock module unchanged`.
 
@@ -78,6 +90,7 @@ entities.
 
 | Message or symptom | Meaning and next step |
 | --- | --- |
+| `waiting_for_adapter` | UB600 is absent or not visible in USB sysfs. No driver unload is attempted. Check the connection/passthrough and wait up to 30 seconds. |
 | `Untested kernel/module build` | No kernel command has been run. Prefer a native-support OS update or wait for a tested release. Do not remove the gate. |
 | `Signed module` / unexpected ELF or table layout | This release cannot safely handle that file. It exits without replacing the stock driver. Do not weaken system protections. |
 | `native_support` | The validated quirk already exists; the stock driver was loaded without a module swap. Verify readings, then remove this workaround when no longer needed. |
@@ -126,8 +139,8 @@ hardware-tested kernel and original module hash **before** invoking kmod.
 The loader uses `modprobe btusb`, `rmmod btusb`, then `insmod` of the copy.
 It does not use `modprobe -r`, which can also remove required dependencies.
 If loading the copy fails, it attempts `modprobe btusb` to restore the stock
-module. Its background loop only reacts if the module disappears; it does
-not periodically reset the Bluetooth radio.
+module. Its background loop retries while waiting for an adapter or if
+the module disappears; it does not periodically reset a loaded driver.
 
 ## Technical references
 
