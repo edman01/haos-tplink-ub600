@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.1 - Adapter presence guard (experimental)
+
+- Require a visible USB device with VID/PID `37ad:0600` before preparing
+  the driver and recheck before kernel commands and driver unloading.
+- Wait without driver changes if the adapter is absent or sysfs cannot be
+  read; retry every 30 seconds, including when another adapter uses btusb.
+- Read no serial numbers, MAC addresses or sensor data.
+- Add offline presence, hot-unplug and retry-loop regression tests.
+- Clarify shared USB identifiers and waiting behavior in English.
+
+The new guard is offline-tested, not a new hardware compatibility claim.
+End-to-end public app-store installation on another system remains untested.
+
 ## 0.1.0 - Experimental initial public release
 
 - Package the hardware-tested four-byte UB600 Realtek quirk workaround as a
