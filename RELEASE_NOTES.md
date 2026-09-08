@@ -1,4 +1,14 @@
-# v0.1.0 - Experimental UB600 compatibility app
+# v0.1.1 - Experimental UB600 presence guard
+
+Adds a read-only USB VID/PID presence check before changing the Bluetooth
+driver. If UB600 is absent or cannot be observed, the app waits and retries
+every 30 seconds without unloading the driver. It rechecks presence just
+before unloading; physical removal can still race with that final check.
+
+`37ad:0600` is a shared vendor/product ID, not an individual serial number.
+No serial numbers, MAC addresses or sensor data are read by the new guard.
+Offline tests cover detection, absence, read errors, hot-unplug and retries.
+Public app-store installation on a second system remains untested.
 
 Temporary Home Assistant OS workaround for TP-Link UB600 **USB ID 37ad:0600**
 when the stock driver does not apply the Realtek firmware-loading quirk.
